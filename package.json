@@ -5,18 +5,18 @@
   "main": "app.js",
   "scripts": {
     "start": "harp server",
-    "watch": "watchify js/app.js -o public/js/bundle.js"
+    "watch": "npm run start & watchify js/app.js -o public/js/bundle.js"
   },
   "author": "Mike Plotz",
   "license": "MIT",
-  "devDependencies": {
-    "browserify": "^5.9.1",
-    "watchify": "^1.0.1",
-    "harp": "^0.12.1"
-  },
   "dependencies": {
     "d3": "^3.4.11",
     "jquery": "^2.1.1",
     "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "browserify": "^5.9.1",
+    "watchify": "^1.0.1",
+    "harp": "^0.12.1"
   }
 }
