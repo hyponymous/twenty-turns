@@ -58,75 +58,75 @@ var EDGE_SLOTS = [
 
 var TURNS = {
   "U": {
-    cornerIndices: [0, 1, 2, 3],
+    cornerSlots: [0, 1, 2, 3],
     cornerTwists: [0, 0, 0, 0],
-    edgeIndices: [0, 1, 2, 3],
+    edgeSlots: [0, 1, 2, 3],
     edgeTwists: [0, 0, 0, 0],
   },
   "U'": {
-    cornerIndices: [0, 3, 2, 1],
+    cornerSlots: [0, 3, 2, 1],
     cornerTwists: [0, 0, 0, 0],
-    edgeIndices: [0, 3, 2, 1],
+    edgeSlots: [0, 3, 2, 1],
     edgeTwists: [0, 0, 0, 0],
   },
   "D": {
-    cornerIndices: [4, 7, 6, 5],
+    cornerSlots: [4, 7, 6, 5],
     cornerTwists: [0, 0, 0, 0],
-    edgeIndices: [8, 11, 10, 9],
+    edgeSlots: [8, 11, 10, 9],
     edgeTwists: [0, 0, 0, 0],
   },
   "D'": {
-    cornerIndices: [4, 5, 6, 7],
+    cornerSlots: [4, 5, 6, 7],
     cornerTwists: [0, 0, 0, 0],
-    edgeIndices: [8, 9, 10, 11],
+    edgeSlots: [8, 9, 10, 11],
     edgeTwists: [0, 0, 0, 0],
   },
   "R": {
-    cornerIndices: [1, 5, 6, 2],
+    cornerSlots: [1, 5, 6, 2],
     cornerTwists: [1, -1, 1, -1],
-    edgeIndices: [5, 9, 6, 1],
+    edgeSlots: [5, 9, 6, 1],
     edgeTwists: [0, 0, 1, 1],
   },
   "R'": {
-    cornerIndices: [1, 2, 6, 5],
+    cornerSlots: [1, 2, 6, 5],
     cornerTwists: [1, -1, 1, -1],
-    edgeIndices: [5, 1, 6, 9],
+    edgeSlots: [5, 1, 6, 9],
     edgeTwists: [0, 0, 1, 1],
   },
   "L": {
-    cornerIndices: [0, 3, 7, 4],
+    cornerSlots: [0, 3, 7, 4],
     cornerTwists: [-1, 1, -1, 1],
-    edgeIndices: [4, 3, 7, 11],
+    edgeSlots: [4, 3, 7, 11],
     edgeTwists: [1, 1, 0, 0],
   },
   "L'": {
-    cornerIndices: [0, 4, 7, 3],
+    cornerSlots: [0, 4, 7, 3],
     cornerTwists: [-1, 1, -1, 1],
-    edgeIndices: [4, 11, 7, 3],
+    edgeSlots: [4, 11, 7, 3],
     edgeTwists: [1, 1, 0, 0],
   },
   "F": {
-    cornerIndices: [3, 2, 6, 7],
+    cornerSlots: [3, 2, 6, 7],
     cornerTwists: [-1, 1, -1, 1],
-    edgeIndices: [2, 6, 10, 7],
+    edgeSlots: [2, 6, 10, 7],
     edgeTwists: [1, 0, 0, 1],
   },
   "F'": {
-    cornerIndices: [3, 7, 6, 2],
+    cornerSlots: [3, 7, 6, 2],
     cornerTwists: [-1, 1, -1, 1],
-    edgeIndices: [2, 7, 10, 6],
+    edgeSlots: [2, 7, 10, 6],
     edgeTwists: [0, 1, 1, 0],
   },
   "B": {
-    cornerIndices: [0, 4, 5, 1],
+    cornerSlots: [0, 4, 5, 1],
     cornerTwists: [1, -1, 1, -1],
-    edgeIndices: [0, 4, 8, 5],
+    edgeSlots: [0, 4, 8, 5],
     edgeTwists: [1, 0, 0, 1],
   },
   "B'": {
-    cornerIndices: [0, 1, 5, 4],
+    cornerSlots: [0, 1, 5, 4],
     cornerTwists: [1, -1, 1, -1],
-    edgeIndices: [0, 5, 8, 4],
+    edgeSlots: [0, 5, 8, 4],
     edgeTwists: [0, 1, 1, 0],
   }
 };
@@ -238,12 +238,12 @@ function derive(position, alg) {
     copyCycle(
         newPosition.corners,
         position.corners,
-        TURNS[turn].cornerIndices,
+        TURNS[turn].cornerSlots,
         TURNS[turn].cornerTwists);
     copyCycle(
         newPosition.edges,
         position.edges,
-        TURNS[turn].edgeIndices,
+        TURNS[turn].edgeSlots,
         TURNS[turn].edgeTwists);
     position = newPosition;
   });
