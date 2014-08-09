@@ -56,6 +56,81 @@ var EDGE_SLOTS = [
     [32, 21]
 ];
 
+var TURNS = {
+  "U": {
+    cornerIndices: [0, 1, 2, 3],
+    cornerTwists: [0, 0, 0, 0],
+    edgeIndices: [0, 1, 2, 3],
+    edgeTwists: [0, 0, 0, 0],
+  },
+  "U'": {
+    cornerIndices: [0, 3, 2, 1],
+    cornerTwists: [0, 0, 0, 0],
+    edgeIndices: [0, 3, 2, 1],
+    edgeTwists: [0, 0, 0, 0],
+  },
+  "D": {
+    cornerIndices: [4, 7, 6, 5],
+    cornerTwists: [0, 0, 0, 0],
+    edgeIndices: [8, 11, 10, 9],
+    edgeTwists: [0, 0, 0, 0],
+  },
+  "D'": {
+    cornerIndices: [4, 5, 6, 7],
+    cornerTwists: [0, 0, 0, 0],
+    edgeIndices: [8, 9, 10, 11],
+    edgeTwists: [0, 0, 0, 0],
+  },
+  "R": {
+    cornerIndices: [1, 5, 6, 2],
+    cornerTwists: [1, -1, 1, -1],
+    edgeIndices: [5, 9, 6, 1],
+    edgeTwists: [0, 0, 1, 1],
+  },
+  "R'": {
+    cornerIndices: [1, 2, 6, 5],
+    cornerTwists: [1, -1, 1, -1],
+    edgeIndices: [5, 1, 6, 9],
+    edgeTwists: [0, 0, 1, 1],
+  },
+  "L": {
+    cornerIndices: [0, 3, 7, 4],
+    cornerTwists: [-1, 1, -1, 1],
+    edgeIndices: [4, 3, 7, 11],
+    edgeTwists: [1, 1, 0, 0],
+  },
+  "L'": {
+    cornerIndices: [0, 4, 7, 3],
+    cornerTwists: [-1, 1, -1, 1],
+    edgeIndices: [4, 11, 7, 3],
+    edgeTwists: [1, 1, 0, 0],
+  },
+  "F": {
+    cornerIndices: [3, 2, 6, 7],
+    cornerTwists: [-1, 1, -1, 1],
+    edgeIndices: [2, 6, 10, 7],
+    edgeTwists: [1, 0, 0, 1],
+  },
+  "F'": {
+    cornerIndices: [3, 7, 6, 2],
+    cornerTwists: [-1, 1, -1, 1],
+    edgeIndices: [2, 7, 10, 6],
+    edgeTwists: [0, 1, 1, 0],
+  },
+  "B": {
+    cornerIndices: [0, 4, 5, 1],
+    cornerTwists: [1, -1, 1, -1],
+    edgeIndices: [0, 4, 8, 5],
+    edgeTwists: [1, 0, 0, 1],
+  },
+  "B'": {
+    cornerIndices: [0, 1, 5, 4],
+    cornerTwists: [1, -1, 1, -1],
+    edgeIndices: [0, 5, 8, 4],
+    edgeTwists: [0, 1, 1, 0],
+  }
+};
+
 var oPadding = 5;
 var cubieSize = 30;
 var iPadding = 2;
@@ -105,35 +180,68 @@ function showPuzzle(data, options) {
   }
 }
 
-function mutate(position, alg) {
+function tokenize(alg) {
+  // strip spaces
+  alg = alg.replace(/ /g, '');
+  var i = 0;
+  var tokens = [];
+  while (i < alg.length) {
+    var part = alg.substr(i, 2);
+    if (/[UDLRFB]2/.test(part)) {
+      // push the single move twice
+      part = alg.substr(i, 1);
+      tokens.push(part);
+      tokens.push(part);
+      i += 2;
+      continue;
+    }
+    if (/[UDLRFB]'/.test(part)) {
+      tokens.push(part);
+      i += 2;
+      continue;
+    }
+    part = alg.substr(i, 1);
+    if (/[UDLRFB]/.test(part)) {
+      tokens.push(part);
+      i++;
+      continue;
+    }
+    throw new Error('Malformed algorithm string');
+  }
+  return tokens;
+}
+
+function derive(position, alg) {
+  if (_.isString(alg)) { return derive(position, tokenize(alg)); }
+
   function copyCubie(dst, src, twist) {
     dst.id = src.id;
     dst.orientation = src.orientation + (twist || 0);
   }
 
-  if (alg === 'U') {
-    var newPosition = _.cloneDeep(position);
-    copyCubie(newPosition.corners[0], position.corners[3]);
-    copyCubie(newPosition.corners[1], position.corners[0]);
-    copyCubie(newPosition.corners[2], position.corners[1]);
-    copyCubie(newPosition.corners[3], position.corners[2]);
-    copyCubie(newPosition.edges[0], position.edges[3]);
-    copyCubie(newPosition.edges[1], position.edges[0]);
-    copyCubie(newPosition.edges[2], position.edges[1]);
-    copyCubie(newPosition.edges[3], position.edges[2]);
-    return newPosition;
-  } else if (alg === 'R') {
-    var newPosition = _.cloneDeep(position);
-    copyCubie(newPosition.corners[1], position.corners[2], 1);
-    copyCubie(newPosition.corners[5], position.corners[1], -1);
-    copyCubie(newPosition.corners[6], position.corners[5], 1);
-    copyCubie(newPosition.corners[2], position.corners[6], -1);
-    copyCubie(newPosition.edges[5], position.edges[1]);
-    copyCubie(newPosition.edges[9], position.edges[5]);
-    copyCubie(newPosition.edges[6], position.edges[9], 1);
-    copyCubie(newPosition.edges[1], position.edges[6], 1);
-    return newPosition;
+  function copyCycle(dst, src, indices, twists) {
+    for (var i = 0; i < indices.length; i++) {
+      copyCubie(
+          dst[indices[i]],
+          src[indices[(i - 1 + indices.length) % indices.length]],
+          twists[i]);
+    }
   }
+
+  _.each(alg, function(turn) {
+    var newPosition = _.cloneDeep(position);
+    copyCycle(
+        newPosition.corners,
+        position.corners,
+        TURNS[turn].cornerIndices,
+        TURNS[turn].cornerTwists);
+    copyCycle(
+        newPosition.edges,
+        position.edges,
+        TURNS[turn].edgeIndices,
+        TURNS[turn].edgeTwists);
+    position = newPosition;
+  });
 
   return position;
 }
@@ -170,8 +278,7 @@ $(document).ready(function() {
     corners: _.map(_.range(8), function (i) { return { id: i, orientation: 0 }; }),
     edges: _.map(_.range(12), function (i) { return { id: i, orientation: 0 }; })
   };
-  position = mutate(position, 'U');
-  position = mutate(position, 'R');
+  position = derive(position, "B U2 B D2 B2 L2 U2 B2 R' B2 L' B2 D' B L2 U2 L2 F");
 
   var order = posToOrder(position);
 
@@ -200,7 +307,7 @@ $(document).ready(function() {
     return memo;
   }, { orderIndex: 0, data: {} }).data);
 
-  showPuzzle(layoutData /* , { showText: true } */);
+  showPuzzle(layoutData);
 
 });
 
