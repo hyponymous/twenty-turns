@@ -131,11 +131,6 @@ var TURNS = {
   }
 };
 
-var oPadding = 5;
-var cubieSize = 30;
-var iPadding = 2;
-var round = 3;
-
 function rotateStr(str, offset) {
   offset = offset % str.length;
   if (offset === 0) { return str; }
@@ -145,7 +140,17 @@ function rotateStr(str, offset) {
 }
 
 function showPuzzle(data, options) {
-  options = _.defaults(options || {}, { showText: false });
+  options = _.defaults(options || {}, {
+    cubieSize: 30,
+    iPadding: 2,
+    oPadding: 5,
+    round: 3,
+    showText: false
+  });
+  var oPadding = options.oPadding;
+  var cubieSize = options.cubieSize;
+  var iPadding = options.iPadding;
+  var round = options.round;
 
   var puzzle = d3.select('body').append('svg')
       .classed('twistypuzzle', true)
@@ -246,6 +251,13 @@ function derive(position, alg) {
   return position;
 }
 
+function getIdentity() {
+  return {
+    corners: _.map(_.range( 8), function (i) { return { id: i, orientation: 0 }; }),
+    edges:   _.map(_.range(12), function (i) { return { id: i, orientation: 0 }; })
+  };
+}
+
 function posToOrder(position) {
   var order = _.range(0, 54, 0);
 
@@ -272,14 +284,7 @@ function posToOrder(position) {
   return order.join('');
 }
 
-$(document).ready(function() {
-
-  var position = {
-    corners: _.map(_.range(8), function (i) { return { id: i, orientation: 0 }; }),
-    edges: _.map(_.range(12), function (i) { return { id: i, orientation: 0 }; })
-  };
-  position = derive(position, "B U2 B D2 B2 L2 U2 B2 R' B2 L' B2 D' B L2 U2 L2 F");
-
+function posToLayout(position) {
   var order = posToOrder(position);
 
   var layout = [
@@ -295,7 +300,8 @@ $(document).ready(function() {
   ];
   var cols = layout[0].length;
   var rows = layout.length;
-  var layoutData = _.values(_.reduce(layout.join(''), function(memo, cell, index) {
+
+  return _.values(_.reduce(layout.join(''), function(memo, cell, index) {
     if (cell === ' ') { return memo; }
     memo.data[index] = {
       orderIndex: memo.orderIndex,
@@ -306,8 +312,10 @@ $(document).ready(function() {
     memo.orderIndex++
     return memo;
   }, { orderIndex: 0, data: {} }).data);
+}
 
-  showPuzzle(layoutData);
-
+$(document).ready(function() {
+  var position = derive(getIdentity(), "B U2 B D2 B2 L2 U2 B2 R' B2 L' B2 D' B L2 U2 L2 F");
+  showPuzzle(posToLayout(position));
 });
 
