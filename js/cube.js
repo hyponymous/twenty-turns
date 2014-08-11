@@ -104,41 +104,6 @@ var EDGE_INDEX = Cube.EDGE_INDEX = _.zipObject(EDGES, _.range(EDGES.length));
 var CORNERS = Cube.CORNERS = ['ULB', 'UBR', 'URF', 'UFL', 'DBL', 'DRB', 'DFR', 'DLF'];
 var CORNER_INDEX = Cube.CORNER_INDEX = _.zipObject(CORNERS, _.range(CORNERS.length));
 
-var EDGE_SLOTS = Cube.EDGE_SLOTS = [
-    [13,  7],
-    [26, 27],
-    [37, 46],
-    [24, 23],
-    [ 3, 10],
-    [ 5, 16],
-    [50, 40],
-    [48, 34],
-    [19,  1],
-    [30, 29],
-    [43, 52],
-    [32, 21]
-];
-var CORNER_SLOTS = Cube.CORNER_SLOTS = [
-    [12, 11,  6],
-    [14,  8, 15],
-    [38, 39, 47],
-    [36, 45, 35],
-    [20,  0,  9],
-    [18, 17,  2],
-    [42, 53, 41],
-    [44, 33, 51]
-];
-var CENTER_SLOTS = Cube.CENTER_SLOTS = [25, 4, 28, 49, 22, 31];
-
-var COLORS = Cube.COLORS = {
-  U: 'w',
-  B: 'b',
-  R: 'r',
-  F: 'g',
-  L: 'o',
-  D: 'y'
-};
-
 Cube.Identity = new Cube({
   ep: EDGES,
   eo: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
