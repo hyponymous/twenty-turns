@@ -1,0 +1,21 @@
+
+body {
+    background-color: #ddd;
+}
+
+.twistypuzzle {
+    background-color: aliceblue;
+}
+
+.cubie {
+    stroke: #444;
+    stroke-width: 1px;
+}
+
+.cubie-w { fill: white; }
+.cubie-r { fill: red; }
+.cubie-g { fill: #1fff1f; }
+.cubie-o { fill: #ff6f1f; }
+.cubie-b { fill: #1f9fef; }
+.cubie-y { fill: yellow; }
+
