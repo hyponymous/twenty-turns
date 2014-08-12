@@ -1,4 +1,4 @@
-# six-twist
+# 20 Turns
 
 A twisty puzzle emulator
 
